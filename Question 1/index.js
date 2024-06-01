@@ -19,7 +19,7 @@ const fetchProductsFromAllAPIs = async (category, query) => {
       try {
         const response = await axios.get(`${ECOMMERCE_API_URLS[key]}/${category}/products`, {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiZXhwIjoxNzE3MjIzNjkzLCJpYXQiOjE3MTcyMjMzOTMsImlzcyI6IkFmZm9yZG1lZCIsImp0aSI6ImExYWFiNzdkLTcxZjUtNDZkMy1iODBiLTIyNzFkYTMwYWM0ZCIsInN1YiI6IjIxY3MzMDI1QHJnaXB0LmFjLmluIn0sImNvbXBhbnlOYW1lIjoiZ29NYXJ0IiwiY2xpZW50SUQiOiJhMWFhYjc3ZC03MWY1LTQ2ZDMtYjgwYi0yMjcxZGEzMGFjNGQiLCJjbGllbnRTZWNyZXQiOiJQR2llUGxaY1J5ZWxZa1BWIiwib3duZXJOYW1lIjoiSmFpbWluIiwib3duZXJFbWFpbCI6IjIxY3MzMDI1QHJnaXB0LmFjLmluIiwicm9sbE5vIjoiMjFDUzMwMjUifQ.Lby2OkzpYhciBLFoj9DGq6zrfoVyLc9LVGe_MFA4R84`,
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiZXhwIjoxNzE3MjI1ODAzLCJpYXQiOjE3MTcyMjU1MDMsImlzcyI6IkFmZm9yZG1lZCIsImp0aSI6ImExYWFiNzdkLTcxZjUtNDZkMy1iODBiLTIyNzFkYTMwYWM0ZCIsInN1YiI6IjIxY3MzMDI1QHJnaXB0LmFjLmluIn0sImNvbXBhbnlOYW1lIjoiZ29NYXJ0IiwiY2xpZW50SUQiOiJhMWFhYjc3ZC03MWY1LTQ2ZDMtYjgwYi0yMjcxZGEzMGFjNGQiLCJjbGllbnRTZWNyZXQiOiJQR2llUGxaY1J5ZWxZa1BWIiwib3duZXJOYW1lIjoiSmFpbWluIiwib3duZXJFbWFpbCI6IjIxY3MzMDI1QHJnaXB0LmFjLmluIiwicm9sbE5vIjoiMjFDUzMwMjUifQ.7hTDUGnUaWO4AgHN6gSJmXTIHRLDX14-Nb3ORRrN5tE`,
           },
           params: {
             top: query.top,
@@ -61,6 +61,7 @@ app.get('/categories/:categoryname/products', async (req, res) => {
       }));
   
       const paginatedProducts = sortAndPaginateProducts(productsWithIds, parseInt(top), 1, null, 'asc');
+      console.log("fetched products:");
       res.json(paginatedProducts);
     } catch (error) {
       res.status(500).json({ error: 'Failed to fetch products' });
