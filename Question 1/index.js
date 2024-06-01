@@ -74,8 +74,11 @@ app.get('/categories/:categoryname/products', async (req, res) => {
 app.get('/categories/:categoryname/products/:productid', async (req, res) => {
     try {
       const { categoryname, productid } = req.params;
+      const { top = 10, minPrice = 1, maxPrice = 10000 } = req.query;
+      const token = req.headers.authorization;
+      console.log("token:", token);
   
-      const products = await fetchProductsFromAPI(categoryname);
+      const products = await fetchProductsFromAllAPIs(categoryname, { token, top, minPrice, maxPrice });
       const product = products.find(product => product.id === productid);
   
       if (!product) {
