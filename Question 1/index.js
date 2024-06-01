@@ -19,7 +19,7 @@ const fetchProductsFromAllAPIs = async (category, query) => {
       try {
         const response = await axios.get(`${ECOMMERCE_API_URLS[key]}/${category}/products`, {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiZXhwIjoxNzE3MjI1ODAzLCJpYXQiOjE3MTcyMjU1MDMsImlzcyI6IkFmZm9yZG1lZCIsImp0aSI6ImExYWFiNzdkLTcxZjUtNDZkMy1iODBiLTIyNzFkYTMwYWM0ZCIsInN1YiI6IjIxY3MzMDI1QHJnaXB0LmFjLmluIn0sImNvbXBhbnlOYW1lIjoiZ29NYXJ0IiwiY2xpZW50SUQiOiJhMWFhYjc3ZC03MWY1LTQ2ZDMtYjgwYi0yMjcxZGEzMGFjNGQiLCJjbGllbnRTZWNyZXQiOiJQR2llUGxaY1J5ZWxZa1BWIiwib3duZXJOYW1lIjoiSmFpbWluIiwib3duZXJFbWFpbCI6IjIxY3MzMDI1QHJnaXB0LmFjLmluIiwicm9sbE5vIjoiMjFDUzMwMjUifQ.7hTDUGnUaWO4AgHN6gSJmXTIHRLDX14-Nb3ORRrN5tE`,
+            Authorization: `Bearer ${query.token}`,
           },
           params: {
             top: query.top,
@@ -53,8 +53,10 @@ app.get('/categories/:categoryname/products', async (req, res) => {
     try {
       const { categoryname } = req.params;
       const { top = 10, minPrice = 1, maxPrice = 10000 } = req.query;
+      const token = req.headers.authorization;
+      console.log("token:", token);
   
-      const products = await fetchProductsFromAllAPIs(categoryname, { top, minPrice, maxPrice });
+      const products = await fetchProductsFromAllAPIs(categoryname, { token, top, minPrice, maxPrice });
       const productsWithIds = products.map(product => ({
         ...product,
         id: uuidv4()
