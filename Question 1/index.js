@@ -5,7 +5,6 @@ const { v4: uuidv4 } = require('uuid');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Dummy URLs for e-commerce APIs
 const ECOMMERCE_API_URLS = {
   'AMZ': 'http://20.244.56.144/test/companies/AMZ/categories',
   'FLP': 'http://20.244.56.144/test/companies/FLP/categories',
@@ -20,7 +19,7 @@ const fetchProductsFromAllAPIs = async (category, query) => {
       try {
         const response = await axios.get(`${ECOMMERCE_API_URLS[key]}/${category}/products`, {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiZXhwIjoxNzE3MjIzMjA5LCJpYXQiOjE3MTcyMjI5MDksImlzcyI6IkFmZm9yZG1lZCIsImp0aSI6ImExYWFiNzdkLTcxZjUtNDZkMy1iODBiLTIyNzFkYTMwYWM0ZCIsInN1YiI6IjIxY3MzMDI1QHJnaXB0LmFjLmluIn0sImNvbXBhbnlOYW1lIjoiZ29NYXJ0IiwiY2xpZW50SUQiOiJhMWFhYjc3ZC03MWY1LTQ2ZDMtYjgwYi0yMjcxZGEzMGFjNGQiLCJjbGllbnRTZWNyZXQiOiJQR2llUGxaY1J5ZWxZa1BWIiwib3duZXJOYW1lIjoiSmFpbWluIiwib3duZXJFbWFpbCI6IjIxY3MzMDI1QHJnaXB0LmFjLmluIiwicm9sbE5vIjoiMjFDUzMwMjUifQ.E8741OtSsi2IgvlGAp-WIyMc991YScdqaHrq61-EGc4`,
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiZXhwIjoxNzE3MjIzNjkzLCJpYXQiOjE3MTcyMjMzOTMsImlzcyI6IkFmZm9yZG1lZCIsImp0aSI6ImExYWFiNzdkLTcxZjUtNDZkMy1iODBiLTIyNzFkYTMwYWM0ZCIsInN1YiI6IjIxY3MzMDI1QHJnaXB0LmFjLmluIn0sImNvbXBhbnlOYW1lIjoiZ29NYXJ0IiwiY2xpZW50SUQiOiJhMWFhYjc3ZC03MWY1LTQ2ZDMtYjgwYi0yMjcxZGEzMGFjNGQiLCJjbGllbnRTZWNyZXQiOiJQR2llUGxaY1J5ZWxZa1BWIiwib3duZXJOYW1lIjoiSmFpbWluIiwib3duZXJFbWFpbCI6IjIxY3MzMDI1QHJnaXB0LmFjLmluIiwicm9sbE5vIjoiMjFDUzMwMjUifQ.Lby2OkzpYhciBLFoj9DGq6zrfoVyLc9LVGe_MFA4R84`,
           },
           params: {
             top: query.top,
@@ -39,7 +38,7 @@ const fetchProductsFromAllAPIs = async (category, query) => {
     return results.flat();
   };
   
-  // function to sort and paginate products
+  // sort and paginate products
   const sortAndPaginateProducts = (products, n, page, sortKey, sortOrder) => {
     if (sortKey) {
       products.sort((a, b) => (a[sortKey] > b[sortKey] ? 1 : -1) * (sortOrder === 'desc' ? -1 : 1));
@@ -68,6 +67,23 @@ app.get('/categories/:categoryname/products', async (req, res) => {
     }
   });
   
+// get product details by ID
+app.get('/categories/:categoryname/products/:productid', async (req, res) => {
+    try {
+      const { categoryname, productid } = req.params;
+  
+      const products = await fetchProductsFromAPI(categoryname);
+      const product = products.find(product => product.id === productid);
+  
+      if (!product) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+  
+      res.json(product);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch product details' });
+    }
+  });
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
